@@ -93,10 +93,10 @@ export default function CourseDetails() {
             </h1>
 
             <p className="opacity-90 max-w-lg">
-              {course.description}
+              {course.description} 
             </p>
 
-            <div className="text-3xl font-bold">
+            <div className="text-3xl  font-bold">
               ₹{course.price} <span className="line-through text-white/70 text-2xl"> ₹{course.oldPrice}</span>
             </div>
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../shared/api";
 import { useBranding } from "../../shared/hooks/useBranding";
-
+import { Link } from "react-router-dom";
 export default function Login() {
   const brand = useBranding();
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-w-screen mx-auto py-20 space-y-6 px-10 bg-gray-100 text-black">
+    <div className="min-w-screen mx-auto py-20 space-y-6 md:px-10 bg-gray-100 text-black">
       <div className="max-w-md mx-auto py-20 space-y-6 px-10 bg-white rounded-lg shadow-lg text-black">
         <h2 className="text-2xl font-semibold">Login</h2>
 
@@ -52,9 +52,11 @@ export default function Login() {
         <button
           onClick={handleLogin}
           className={`w-full py-2  text-white rounded-lg  ${brand.theme.button.primary} ${brand.theme.shape?.radius || ""}`}
-      style={{ transition: "background-color 0.3s ease" }} >
+          style={{ transition: "background-color 0.3s ease" }} >
           Login
         </button>
+        <p className="text-center"> New to {brand.siteName}? <Link to="/register">Register Here.</Link></p>
+
         {popup && (
           <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg">
             Invalid credentials. Please try again.

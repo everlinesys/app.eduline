@@ -2,7 +2,7 @@ import branding from "../../config/branding.json";
 
 export default function Contact() {
   return (
-    <div className="max-w-4xl mx-auto px-6 py-16 space-y-10">
+    <div className="mx-auto px-6 py-16 space-y-10 text-black">
 
       <div>
         <h1 className="text-3xl font-bold mb-2">

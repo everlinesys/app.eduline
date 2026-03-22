@@ -1,15 +1,17 @@
+import { createBrowserRouter } from "react-router-dom";
+
+// Auth
 import Login from "../public/pages/Login";
 import Register from "../public/pages/Register";
-import Courses from "../public/pages/Courses";
-import { createBrowserRouter } from "react-router-dom";
-import PublicLayout from "../public/layout/PublicLayout";
-import Home from "../public/pages/Home";
+
+// Shared
 import ProtectedRoute from "../shared/components/ProtectedRoute";
-import StudentLayout from "../student/layout/StudentLayout";
-import AdminLayout from "../admin/layout/AdminLayout";
-import AdminSettings from "../admin/pages/Settings";
+import Courses from "../public/pages/Courses";
 import Contact from "../public/pages/Contact";
 import CourseDetails from "../public/pages/CourseDetails";
+import PageNotFound from "../public/pages/PageNotFound";
+// Student
+import StudentLayout from "../student/layout/StudentLayout";
 import Dashboard from "../student/pages/Dashboard";
 import MyCourses from "../student/pages/MyCourses";
 import StudentCertificates from "../student/pages/Certificates";
@@ -17,72 +19,60 @@ import StudentProfile from "../student/pages/Profile";
 import StudentSecurity from "../student/pages/Security";
 import StudentHistory from "../student/pages/History";
 import WatchCourse from "../student/pages/WatchCourse";
-
-import AdminDashboard from "../admin/pages/Dashboard";
-import AdminCourses from "../admin/pages/Courses";
-import AdminStudents from "../admin/pages/Students";
-import EditCourse from "../admin/pages/EditCourse";
-import CourseCurriculum from "../admin/pages/CourseCurriculum";
-
 export const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <PublicLayout />,
-        children: [
-            { index: true, element: <Home /> },
-            { path: "login", element: <Login /> },
-            { path: "register", element: <Register /> },
-            { path: "courses", element: <Courses /> },
-            { path: "contact", element: <Contact /> },
-            { path: "courses/:courseId", element: <CourseDetails /> },
 
-
+  // 🔐 Root "/"
+  {
+    path: "/",
+    element: <ProtectedRoute role="student" />,
+    children: [
+      {
+        element: <StudentLayout />,
+        children: [ 
+          { index: true, element: <Dashboard /> },
+          { path: "my-courses", element: <MyCourses /> },
+          { path: "certificates", element: <StudentCertificates /> },
+          { path: "profile", element: <StudentProfile /> },
+          { path: "security", element: <StudentSecurity /> },
+          { path: "history", element: <StudentHistory /> },
+          { path: "watch/:courseId", element: <WatchCourse /> },
         ],
-    },
+      },
+    ],
+  },
 
-    {
-        path: "/student",
-        element: <ProtectedRoute role="student" />,
+  // 🔐 "/student" alias (same layout)
+  {
+    path: "/student",
+    element: <ProtectedRoute role="student" />,
+    children: [
+      {
+        element: <StudentLayout />,
         children: [
-            {
-                path: "",
-                element: <StudentLayout />,
-                children: [
-                    { index: true, element: <Dashboard /> },
-                    { path: "my-courses", element: <MyCourses /> },
-                    { path: "certificates", element: <StudentCertificates /> },
-                    { path: "profile", element: <StudentProfile /> },
-                    { path: "security", element: <StudentSecurity /> },
-                    { path: "history", element: <StudentHistory /> },
-                    { path: "watch/:courseId", element: <WatchCourse /> }
-
-                ],
-            },
+          { index: true, element: <Dashboard /> },
+          { path: "my-courses", element: <MyCourses /> },
+          { path: "certificates", element: <StudentCertificates /> },
+          { path: "profile", element: <StudentProfile /> },
+          { path: "security", element: <StudentSecurity /> },
+          { path: "history", element: <StudentHistory /> },
+          { path: "watch/:courseId", element: <WatchCourse /> },
         ],
-    },
+      },
+    ],
+  },
 
-    {
-        path: "/admin",
-        element: <ProtectedRoute role="ADMIN" />,
-        children: [
-            {
+  // 🔓 Auth
+  { path: "/login", element: <Login /> },
+  { path: "/register", element: <Register /> },
 
-                element: <AdminLayout />,
-                children: [
-                    { index: true, element: <AdminDashboard /> },
-                    { path: "courses", element: <AdminCourses /> },
-                    { path: "courses/:id", element: <EditCourse /> },
-                    { path: "course/:id/manage", element: <CourseCurriculum /> },
-                    { path: "students", element: <AdminStudents /> },
-                    { path: "settings", element: <AdminSettings /> },
-                ],
-            },
-        ],
-    },
-
-    {
-        path: "*",
-        element: <div style={{ padding: 40 }}>Page Not Found</div>,
-    }
-
+  // 🌐 Optional public courses
+  { path: "/courses", element: <Courses /> },
+  { path: "contact", element: <Contact /> },
+  { path: "courses/:courseId", element: <CourseDetails /> },
+  { path: "course/:courseId", element: <CourseDetails /> },
+  // ❌ Fallback
+  {
+    path: "*",
+    element: <PageNotFound />,
+  },
 ]);

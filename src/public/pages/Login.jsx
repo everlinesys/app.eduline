@@ -29,7 +29,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-w-screen mx-auto py-20 space-y-6 md:px-10 bg-gray-100 text-black">
+    <div className="min-w-screen min-h-screen mx-auto py-20 space-y-6 md:px-10 bg-gray-100 text-black">
       <div className="max-w-md mx-auto py-20 space-y-6 px-10 bg-white rounded-lg shadow-lg text-black">
         <h2 className="text-2xl font-semibold">Login</h2>
 

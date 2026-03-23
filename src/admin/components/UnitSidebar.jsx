@@ -23,6 +23,13 @@ export default function UnitSidebar({
     reload();
   }
 
+  async function deleteUnit(id) {
+    if (!confirm("Delete this unit?")) return;
+
+    await api.delete(`/units/${id}`);
+    reload();
+  }
+
   return (
     <aside className="w-80 h-full bg-slate-900 border-r border-slate-800 flex flex-col">
 
@@ -40,7 +47,6 @@ export default function UnitSidebar({
           </h1>
         </div>
 
-        {/* MOBILE CLOSE ICON SPACE (optional) */}
         <div className="lg:hidden text-slate-500 text-xs">
           Units
         </div>
@@ -56,13 +62,13 @@ export default function UnitSidebar({
         )}
 
         {units.map((u, index) => (
-          <button
+          <div
             key={u.id}
             onClick={() => setActiveUnit(u)}
-            className={`w-full text-left px-4 py-3 rounded-lg transition group
+            className={`relative w-full text-left px-4 py-3 pr-10 rounded-lg transition group border cursor-pointer
               ${activeUnit?.id === u.id
-                ? "bg-indigo-600/20 text-indigo-400 border border-indigo-500/30"
-                : "hover:bg-slate-800 border border-transparent"
+                ? "bg-indigo-600/20 text-indigo-400 border-indigo-500/30"
+                : "hover:bg-slate-800 border-transparent"
               }`}
           >
             <div className="flex items-center gap-3">
@@ -74,7 +80,21 @@ export default function UnitSidebar({
                 {u.title}
               </span>
             </div>
-          </button>
+
+            {/* DELETE ICON */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteUnit(u.id);
+              }}
+              style={{background:"transparent", border:"none", color:"red"}}
+              className="absolute right-3 top-1/2 -translate-y-1/2 
+                         text-slate-500 hover:text-red-400 
+                         opacity-0 group-hover:opacity-100 transition"
+            >
+              🗑
+            </button>
+          </div>
         ))}
       </div>
 

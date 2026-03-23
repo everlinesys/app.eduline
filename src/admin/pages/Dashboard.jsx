@@ -18,23 +18,51 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [chartData, setChartData] = useState([]);
 
+  const [liveClasses, setLiveClasses] = useState([]);
+  const [now, setNow] = useState(new Date());
+
   // ⭐ LOAD REAL DATA
   useEffect(() => {
     async function load() {
       try {
-        const [statsRes, chartRes] = await Promise.all([
+        const [statsRes, chartRes, liveRes] = await Promise.all([
           api.get("/adminDashboard/dashboard"),
           api.get("/adminAnalytics/revenue"),
+          api.get("/live-classes"),
         ]);
 
         setStats(statsRes.data);
         setChartData(chartRes.data);
+        setLiveClasses(liveRes.data);
       } catch (err) {
         console.error("Analytics load error:", err);
       }
     }
 
     load();
+  }, []);
+  function getCountdown(startTime) {
+    const diff = new Date(startTime) - now;
+
+    if (diff <= 0) return "Live";
+
+    const h = Math.floor(diff / (1000 * 60 * 60));
+    const m = Math.floor((diff / (1000 * 60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+
+    return `${h}h ${m}m ${s}s`;
+  }
+
+  function isLive(start, end) {
+    return now >= new Date(start) && now <= new Date(end);
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   if (!stats)
@@ -82,7 +110,63 @@ export default function AdminDashboard() {
           icon={<IndianRupee size={16} />}
         />
       </div>
+      {/* ===== LIVE SESSIONS ===== */}
+      {liveClasses.length > 0 && (
+        <div className="space-y-4">
 
+          <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+            Live Sessions
+          </h3>
+
+          <div className="grid md:grid-cols-2 gap-4">
+
+            {liveClasses.map((lc) => {
+              const live = isLive(lc.startTime, lc.endTime);
+
+              return (
+                <div
+                  key={lc.id}
+                  className="p-5 rounded-2xl border bg-white shadow-sm space-y-3"
+                >
+
+                  {/* Course Name */}
+                  <p className="text-[10px] uppercase text-slate-400 font-bold tracking-widest">
+                    {lc.course?.title || "Course"}
+                  </p>
+
+                  {/* Title */}
+                  <h4 className="font-semibold text-slate-900">
+                    {lc.title}
+                  </h4>
+
+                  {/* Time */}
+                  <p className="text-sm text-slate-500">
+                    {new Date(lc.startTime).toLocaleString()}
+                  </p>
+
+                  {/* Countdown */}
+                  <p className={`text-lg font-mono ${live ? "text-red-500" : "text-indigo-600"
+                    }`}>
+                    {live ? "🔴 Live Now" : `⏳ ${getCountdown(lc.startTime)}`}
+                  </p>
+
+                  {/* JOIN */}
+                  {live && (
+                    <button
+                      onClick={() => window.open(lc.meetLink, "_blank")}
+                      className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg text-sm font-semibold"
+                    >
+                      🔴 Join Class
+                    </button>
+                  )}
+
+                </div>
+              );
+            })}
+
+          </div>
+        </div>
+      )}
       {/* ===== REAL ANALYTICS GRAPH ===== */}
       <div className="space-y-6">
         <div className="flex items-center justify-between px-2">

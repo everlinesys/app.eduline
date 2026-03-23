@@ -22,14 +22,44 @@ export default function Dashboard() {
   const primary = brand.colors?.primary || "#059669";
 
   const [data, setData] = useState(null);
+  const [liveClasses, setLiveClasses] = useState([]);
+  const [now, setNow] = useState(new Date());
 
   useEffect(() => {
     async function load() {
       const res = await api.get("/student/dashboard");
+      const liveRes = await api.get("/live-classes/student");
+
       setData(res.data);
+      setLiveClasses(liveRes.data);
     }
     load();
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
+  function isLive(start, end) {
+    return now >= new Date(start) && now <= new Date(end);
+  }
+
+  function getCountdown(start) {
+    const diff = new Date(start) - now;
+
+    if (diff <= 0) return "Live";
+
+    const h = Math.floor(diff / (1000 * 60 * 60));
+    const m = Math.floor((diff / (1000 * 60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+
+    return `${h}h ${m}m ${s}s`;
+  }
 
   if (!data) {
     return (
@@ -49,7 +79,10 @@ export default function Dashboard() {
     { day: "Sat", progress: 80 },
     { day: "Sun", progress: 75 },
   ];
-
+  function joinLiveClass() {
+    const meetLink = "https://meet.google.com/fhg-jqka-uuf";
+    window.open(meetLink, "_blank");
+  }
   return (
     <div className="space-y-10 p-4 md:p-0">
 
@@ -67,6 +100,63 @@ export default function Dashboard() {
       </div>
 
       {/* ===== OVERVIEW CARDS ===== */}
+      {/* ===== LIVE CLASS ===== */}
+      {/* ===== LIVE CLASSES ===== */}
+      {liveClasses.length > 0 && (
+        <Section title="Live Sessions">
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            {liveClasses.map((lc) => {
+              const live = isLive(lc.startTime, lc.endTime);
+
+              return (
+                <div
+                  key={lc.id}
+                  className="bg-white border rounded-2xl p-5 space-y-3 shadow-sm"
+                >
+
+                  {/* Course */}
+                  <p className="text-[10px] uppercase text-slate-400 font-bold tracking-widest">
+                    {lc.course?.title}
+                  </p>
+
+                  {/* Title */}
+                  <h4 className="font-semibold text-slate-900">
+                    {lc.title}
+                  </h4>
+
+                  {/* Time */}
+                  <p className="text-sm text-slate-500">
+                    {new Date(lc.startTime).toLocaleString()}
+                  </p>
+
+                  {/* Countdown */}
+                  <p className={`text-lg font-mono ${live ? "text-red-500" : "text-indigo-600"
+                    }`}>
+                    {live ? "🔴 Live Now" : `⏳ ${getCountdown(lc.startTime)}`}
+                  </p>
+
+                  {/* Join */}
+                  <button
+                    disabled={!live}
+                    onClick={() => window.open(lc.meetLink, "_blank")}
+                    className={`w-full py-2 rounded-lg text-sm font-semibold transition
+                ${live
+                        ? "bg-red-600 hover:bg-red-700 text-white"
+                        : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                      }`}
+                  >
+                    🔴 Join Class
+                  </button>
+
+                </div>
+              );
+            })}
+
+          </div>
+        </Section>
+      )}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <OverviewCard
@@ -86,7 +176,7 @@ export default function Dashboard() {
           value={`${Math.round(
             (data.stats.completedCourses /
               data.stats.totalCourses) *
-              100 || 0
+            100 || 0
           )}%`}
           color={primary}
         />
@@ -121,7 +211,16 @@ export default function Dashboard() {
       {data.continueLearning?.length > 0 && (
         <Section title="Continue Learning">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data.continueLearning.map((item, i) => (
+
+            {Object.values(
+              data.continueLearning.reduce((acc, item) => {
+                // keep first occurrence of each course
+                if (!acc[item.courseId]) {
+                  acc[item.courseId] = item;
+                }
+                return acc;
+              }, {})
+            ).map((item, i) => (
               <CourseCard
                 key={i}
                 title={item.courseTitle}
@@ -133,6 +232,7 @@ export default function Dashboard() {
                 action="Resume"
               />
             ))}
+
           </div>
         </Section>
       )}

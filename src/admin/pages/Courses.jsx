@@ -10,6 +10,15 @@ export default function Courses() {
   const navigate = useNavigate();
   const brand = useBranding();
   const primary = brand.colors?.primary || "#0f172a";
+  const [showLiveModal, setShowLiveModal] = useState(false);
+  const [liveForm, setLiveForm] = useState({
+    title: "",
+    meetInput: "",
+    startTime: "",
+    endTime: "",
+  });
+  const [nextLive, setNextLive] = useState(null);
+  const [now, setNow] = useState(new Date());
 
   const load = async () => {
     try {
@@ -21,6 +30,49 @@ export default function Courses() {
   };
 
   useEffect(() => { load(); }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (!active) return;
+
+    async function loadLive() {
+      try {
+        const res = await api.get(`/live-classes?courseId=${active.id}`);
+
+        const nowTime = new Date();
+
+        const upcoming = res.data
+          .filter(c => new Date(c.startTime) > nowTime)
+          .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))[0];
+
+        setNextLive(upcoming || null);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadLive();
+  }, [active]);
+
+  function getCountdown() {
+    if (!nextLive) return null;
+
+    const diff = new Date(nextLive.startTime) - now;
+
+    if (diff <= 0) return "Starting...";
+
+    const h = Math.floor(diff / (1000 * 60 * 60));
+    const m = Math.floor((diff / (1000 * 60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+
+    return `${h}h ${m}m ${s}s`;
+  }
 
   const deleteCourse = async (id) => {
     if (!window.confirm("Permanent delete? This cannot be undone.")) return;
@@ -56,6 +108,69 @@ export default function Courses() {
     }
   };
 
+  function isLiveNow() {
+    if (!nextLive) return false;
+
+    const start = new Date(nextLive.startTime);
+    const end = new Date(nextLive.endTime);
+
+    return now >= start && now <= end;
+  }
+
+  async function createLiveClass() {
+    try {
+      const meetId = extractMeetId(liveForm.meetInput);
+
+      if (!meetId) {
+        return alert("Enter valid Google Meet ID");
+      }
+
+      const start = new Date(liveForm.startTime);
+      const end = new Date(liveForm.endTime);
+
+      const diffMinutes = (end - start) / (1000 * 60);
+
+      if (diffMinutes <= 0) {
+        return alert("End time must be after start time");
+      }
+
+      if (diffMinutes > 60) {
+        return alert("Max class duration is 60 minutes");
+      }
+
+      await api.post("/live-classes", {
+        title: liveForm.title,
+        meetLink: `https://meet.google.com/${meetId}`,
+        startTime: liveForm.startTime,
+        endTime: liveForm.endTime,
+        courseId: active.id,
+      });
+
+      setShowLiveModal(false);
+      setLiveForm({
+        title: "",
+        meetInput: "",
+        startTime: "",
+        endTime: "",
+      });
+
+      alert("Live class scheduled");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create live class");
+    }
+  }
+  function extractMeetId(input) {
+    if (!input) return "";
+
+    // if full link
+    if (input.includes("meet.google.com")) {
+      return input.split("/").pop();
+    }
+
+    // assume already ID
+    return input.trim();
+  }
   const API_BASE = import.meta.env.VITE_API_URL.replace("/api", "");
 
   return (
@@ -199,7 +314,39 @@ export default function Courses() {
                   </span>
                 </div>
               )}
+              {nextLive && (
+                <div className="mt-4 p-4 rounded-xl bg-indigo-50 border border-indigo-100 space-y-3">
 
+                  <p className="text-[10px] uppercase tracking-widest text-indigo-500 font-bold">
+                    Next Live Session
+                  </p>
+
+                  <p className="text-sm font-semibold text-slate-800">
+                    {new Date(nextLive.startTime).toLocaleString()}
+                  </p>
+
+                  <p className="text-lg font-mono text-indigo-600">
+                    ⏳ {getCountdown()}
+                  </p>
+
+                  {/* 🔴 JOIN BUTTON */}
+                  {isLiveNow() && (
+                    <button
+                      onClick={() => window.open(nextLive.meetLink, "_blank")}
+                      className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg text-sm font-semibold transition"
+                    >
+                      🔴 Join Live Class
+                    </button>
+                  )}
+
+                </div>
+              )}
+              <button
+                onClick={() => setShowLiveModal(true)}
+                className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-purple-600 text-white text-[12px] font-bold transition-all"
+              >
+                📅 Schedule Live
+              </button>
               {/* Buttons - These stay at the bottom of the scrollable content */}
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <button
@@ -253,6 +400,98 @@ export default function Courses() {
                   Archive Course
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showLiveModal && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+
+          {/* backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setShowLiveModal(false)}
+          />
+
+          {/* modal */}
+          <div className="relative bg-white w-full max-w-md rounded-2xl p-6 space-y-5 shadow-xl">
+
+            <h3 className="text-lg font-bold">Schedule Live Class</h3>
+
+            {/* TITLE */}
+            <div className="relative">
+              <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] text-slate-500">
+                Title
+              </label>
+              <input
+                className="w-full border px-3 py-2 rounded-lg text-sm"
+                value={liveForm.title}
+                onChange={(e) =>
+                  setLiveForm({ ...liveForm, title: e.target.value })
+                }
+              />
+            </div>
+
+            {/* MEET INPUT */}
+            <div className="relative">
+              <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] text-slate-500">
+                Google Meet ID or Link
+              </label>
+              <input
+                placeholder="fhg-jqka-uuf or full link"
+                className="w-full border px-3 py-2 rounded-lg text-sm"
+                value={liveForm.meetInput}
+                onChange={(e) =>
+                  setLiveForm({ ...liveForm, meetInput: e.target.value })
+                }
+              />
+            </div>
+
+            {/* START TIME */}
+            <div className="relative">
+              <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] text-slate-500">
+                Start (MM-DD-YYYY HH:MM AM/PM)
+              </label>
+              <input
+                type="datetime-local"
+                className="w-full border px-3 py-2 rounded-lg text-sm"
+                value={liveForm.startTime}
+                onChange={(e) =>
+                  setLiveForm({ ...liveForm, startTime: e.target.value })
+                }
+              />
+            </div>
+
+            {/* END TIME */}
+            <div className="relative">
+              <label className="absolute -top-2 left-3 bg-white px-1 text-[10px] text-slate-500">
+                End (Max 60 mins)
+              </label>
+              <input
+                type="datetime-local"
+                className="w-full border px-3 py-2 rounded-lg text-sm"
+                value={liveForm.endTime}
+                onChange={(e) =>
+                  setLiveForm({ ...liveForm, endTime: e.target.value })
+                }
+              />
+            </div>
+
+            {/* BUTTONS */}
+            <div className="flex gap-2 pt-2">
+              <button
+                onClick={createLiveClass}
+                className="flex-1 bg-green-600 text-white py-2 rounded-lg text-sm font-semibold"
+              >
+                Create
+              </button>
+
+              <button
+                onClick={() => setShowLiveModal(false)}
+                className="flex-1 bg-slate-200 py-2 rounded-lg text-sm"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>

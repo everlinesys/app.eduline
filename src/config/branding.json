@@ -1,77 +1,74 @@
 {
   "default": {
-    "siteName": "Grace English Academy",
-    "tagline": "Speak English with Confidence",
+    "siteName": "Anandh Unni Experiments",
+    "tagline": "Master Video Editing, Graphics & AI Visual Creation",
 
-    "primaryColor": "#3426db",
-    "theme": "softSaaSMarketing",
+    "primaryColor": "#0f172a",
+    "theme": "darkModern",
 
-    "logo": "/graceenglish-logo.png",
-    "students": "3K",
+    "logo": "/auelogo.jpg",
+    "students": "200",
 
     "colors": {
-      "primary": "#3426db",
-      "accent": "white"
+      "primary": "#0f172a",
+      "accent": "#22c55e"
     },
 
     "hero": {
-      "title": "Live Spoken English Classes",
-      "subtitle": "Learn spoken English with Miss Grace through structured lessons, live classes, and real conversation practice.",
-
+      "title": "Create Stunning Visuals with Editing, Graphics & AI",
+      "subtitle": "Learn video editing, motion graphics, and AI-powered design techniques to build content that stands out. From beginner to advanced workflows, everything you need is here.",
       "image": "/hero.png",
 
-      "bunnyVideoId": "231392af-8a40-4586-9879-897d3f02b853",
-      "poster": "/english-hero.png"
+      "bunnyVideoId": "replace-with-your-video-id",
+      "poster": "/hero-poster.jpg"
     },
 
     "preview": {
-      "badge": "Trusted English Training",
-      "title": "Practical Spoken English",
-      "highlight": "Speak Fluently.",
-      "description": "Step-by-step English speaking training designed for beginners, job seekers, and professionals who want to communicate confidently.",
+      "badge": "Creative Skill Academy",
+      "title": "If you can imagine it, you can create it.",
+      "highlight": "Master Editing, Graphics & AI Tools",
+      "description": "Our courses focus on real-world creative workflows — from editing cinematic videos to designing high-quality graphics and using AI tools to speed up your process. Learn by building actual projects, not just theory.",
 
-      "bunnyVideoId": "231392af-8a40-4586-9879-897d3f02b853",
+      "bunnyVideoId": "replace-with-your-video-id",
+      "libraryId": "your-library-id",
+      "poster": "/preview-poster.jpg",
 
-      "libraryId": "594138",
-
-      "poster": "/english-hero.png",
-
-      "videoUrl": "https://youtu.be/8nOOE8ZAzqU?si=YyWEkz_gvDEUAK6E",
+      "videoUrl": "https://youtube.com",
 
       "perks": [
-        { "value": "SPEAKING", "label": "Live Conversation Practice" },
-        { "value": "FLUENCY", "label": "Daily Speaking Exercises" }
+        { "value": "PROJECT", "label": "Real Project-Based Learning" },
+        { "value": "AI POWER", "label": "AI-Driven Creative Workflows" }
       ]
     },
 
     "reviews": [
       {
-        "name": "Faisal Rahman",
-        "role": "Student",
+        "name": "Arjun Nair",
+        "role": "Content Creator",
         "rating": 5,
-        "text": "Miss Grace explains English very clearly. My confidence in speaking has improved a lot."
+        "text": "I learned professional video editing and started creating content that actually stands out. The AI tools section is a game changer."
       },
       {
-        "name": "Anu Joseph",
-        "role": "Job Seeker",
+        "name": "Fathima Shirin",
+        "role": "Freelance Designer",
         "rating": 5,
-        "text": "The live speaking sessions helped me prepare for interviews and communicate better."
+        "text": "Finally understood how to combine design + editing + AI. My freelance income improved a lot after this."
       },
       {
-        "name": "Rahul Mathew",
-        "role": "Working Professional",
+        "name": "Nikhil Raj",
+        "role": "YouTuber",
         "rating": 4,
-        "text": "Very practical classes with real conversation practice. Highly recommended."
+        "text": "Clear, practical, and straight to the point. Helped me level up my video quality and workflow."
       }
     ],
 
     "contact": {
-      "email": "support@graceenglishacademy.in",
-      "phone": "+91 9400 690 911",
-      "whatsapp": "+91 9400 690 911",
-      "address": "Kochi, Kerala, India",
-      "supportName": "Miss Grace Support Team",
-      "image": "/english-hero.png"
+      "email": "support@anandhunni.com",
+      "phone": "+91 90000 00000",
+      "whatsapp": "+91 90000 00000",
+      "address": "Kerala, India",
+      "supportName": "Creative Support Team",
+      "image": "/support-dark.jpg"
     }
   }
 }

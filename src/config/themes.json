@@ -1,4 +1,48 @@
 {
+  "darkModern": {
+    "layout": {
+      "page": "bg-[#020617] text-white",
+      "container": "bg-[#020617] text-white",
+      "panel": "bg-[#0f172a] border border-[#1e293b]",
+      "header": "bg-[#0f172a] border-b border-[#1e293b]",
+      "footer": "bg-[#0f172a] border-t border-[#1e293b]"
+    },
+
+    "shape": {
+      "radius": "rounded-xl",
+      "cardRadius": "rounded-2xl",
+      "buttonRadius": "rounded-xl",
+      "inputRadius": "rounded-xl"
+    },
+
+    "text": {
+      "title": "font-semibold tracking-tight text-white",
+      "subtitle": "text-white/80 font-medium",
+      "body": "text-white/70",
+      "label": "text-white/50 text-xs font-semibold"
+    },
+
+    "button": {
+      "primary": "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg",
+      "secondary": "bg-[#0f172a] border border-[#334155] text-white hover:bg-[#1e293b]",
+      "accent": "bg-emerald-500 hover:bg-emerald-600 text-white",
+      "danger": "bg-red-600 hover:bg-red-700 text-white"
+    },
+
+    "input": {
+      "base": "bg-[#020617] border border-[#334155] text-white placeholder:text-white/40 focus:border-indigo-500 outline-none"
+    },
+
+    "badge": {
+      "base": "bg-[#0f172a] border border-[#334155] text-white/70"
+    },
+
+    "card": {
+      "soft": "bg-[#0f172a] border border-[#1e293b]",
+      "glass": "bg-[#0f172a]/80 backdrop-blur border border-[#1e293b]"
+    }
+  },
+
   "darkBox": {
     "layout": {
       "page": "bg-[#0B1A2B] text-white",
@@ -7,35 +51,29 @@
       "header": "bg-[#0F2236] border-b border-[#13263C]",
       "footer": "bg-[#0F2236] border-t border-[#13263C]"
     },
-
     "shape": {
       "radius": "rounded-sm",
       "cardRadius": "rounded-sm",
       "buttonRadius": "rounded-sm",
       "inputRadius": "rounded-sm"
     },
-
     "text": {
       "title": "font-semibold tracking-tight text-white",
       "subtitle": "text-white/85 font-medium",
       "body": "text-white/75",
       "label": "text-white/60 text-xs font-semibold"
     },
-
     "button": {
       "primary": "bg-[#1E3A5F] hover:bg-[#254B78] border border-[#2A4F77] text-white",
       "secondary": "bg-[#0B1A2B] border border-[#27496D] text-white hover:bg-[#13263C]",
       "danger": "bg-red-900/40 border border-red-700 hover:bg-red-700 text-white"
     },
-
     "input": {
       "base": "bg-[#0B1A2B] border border-[#27496D] text-white placeholder:text-white/40 focus:border-blue-400 outline-none"
     },
-
     "badge": {
       "base": "bg-[#0B1A2B] border border-[#27496D] text-white/70"
     },
-
     "card": {
       "soft": "bg-[#0F2236] border border-[#1B3552]",
       "glass": "bg-[#0F2236]/80 backdrop-blur border border-[#1B3552]"
@@ -50,45 +88,35 @@
       "header": "bg-white/80 backdrop-blur border border-[#E6ECE9]",
       "footer": "bg-white border-t border-[#E6ECE9]"
     },
-
     "shape": {
       "radius": "rounded-sm",
       "cardRadius": "rounded-2xl",
       "buttonRadius": "rounded-full",
       "inputRadius": "rounded-xl"
     },
-
     "text": {
       "title": "font-semibold tracking-tight text-[#1F2933]",
       "subtitle": "text-[#4B5563] font-medium",
       "body": "text-[#6B7280]",
       "label": "text-[#6B7280] text-xs font-semibold"
     },
-
     "button": {
       "primary": "bg-[#1F2933] text-white hover:bg-black shadow-sm",
       "secondary": "bg-white border border-[#E6ECE9] text-[#1F2933] hover:bg-[#F7FAF9]",
       "accent": "bg-[#2E9C87] text-white hover:bg-[#238B77]"
     },
-
     "input": {
       "base": "bg-white border border-[#E6ECE9] focus:border-[#2E9C87] focus:ring-2 focus:ring-[#2E9C87]/20 outline-none"
     },
-
     "badge": {
       "base": "bg-white border border-[#E6ECE9] text-[#4B5563]"
     },
-
     "card": {
       "soft": "bg-white shadow-sm border border-[#E6ECE9]",
       "glass": "bg-white/70 backdrop-blur border border-white/40"
-    },
-
-    "effects": {
-      "heroGlow": "bg-[#DFF3EE]",
-      "imageFrame": "bg-[#EAF5F1]"
     }
   },
+
   "formalLight": {
     "layout": {
       "page": "bg-white text-black",
@@ -97,37 +125,29 @@
       "header": "bg-white border-b border-gray-200",
       "footer": "bg-white border-t border-gray-200"
     },
-
     "shape": {
       "radius": "rounded-xl",
       "cardRadius": "rounded-none",
       "buttonRadius": "rounded-none",
       "inputRadius": "rounded-none"
     },
-
     "text": {
-      "title": "text-black font-bols text-sm",
+      "title": "text-black font-bold text-sm",
       "subtitle": "text-gray-700 text-xs",
       "body": "text-gray-600 text-xs",
       "label": "text-blue-500 text-[11px]"
     },
-
     "button": {
-      "primary": "bg-blue-600 text-white hover:bg-blue-900 text-lg ",
+      "primary": "bg-blue-600 text-white hover:bg-blue-900 text-lg",
       "secondary": "bg-white border border-gray-300 text-black hover:bg-gray-50 text-xs",
-      "danger": "bg-red-600 text-white hover:bg-red-700 text-xs",
-      "menu": "bg-white text-gray-500",
-      "actvemenu": "bg-grey-100 text-white"
+      "danger": "bg-red-600 text-white hover:bg-red-700 text-xs"
     },
-
     "input": {
       "base": "bg-white border border-gray-300 text-black text-xs focus:border-black outline-none"
     },
-
     "badge": {
       "base": "bg-gray-100 border border-gray-200 text-gray-700 text-[10px]"
     },
-
     "card": {
       "soft": "bg-white border border-gray-200",
       "glass": "bg-white border border-gray-200"

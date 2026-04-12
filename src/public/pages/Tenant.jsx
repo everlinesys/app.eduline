@@ -26,7 +26,7 @@ export default function Tenant() {
 
     localStorage.setItem("tenant_id", code.trim());
     setError("");
-    navigate("/login", { replace: true });
+    window.location.href = "/login";
   };
 
   // ⛔ prevent UI flash before redirect

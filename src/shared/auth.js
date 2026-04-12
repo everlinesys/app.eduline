@@ -13,5 +13,5 @@ export function getUser() {
 export function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("user"); // if you store user separately
-  window.location.href = "/login";
+  window.location.href = "/welcome"; // Redirect to welcome page after logout
 }

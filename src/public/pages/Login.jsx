@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import api from "../../shared/api";
 import { useBranding } from "../../shared/hooks/useBranding";
-import { Link } from "react-router-dom";
+
 export default function Login() {
   const brand = useBranding();
   const navigate = useNavigate();
@@ -28,40 +29,92 @@ export default function Login() {
     }
   };
 
+  // 👈 NEW: back handler
+  const handleBack = () => {
+    localStorage.removeItem("tenant_id");
+    navigate("/welcome", { replace: true });
+  };
+
   return (
-    <div className="min-w-screen min-h-screen mx-auto py-20 space-y-6 md:px-10 bg-gray-100 text-black">
-      <div className="max-w-md mx-auto py-20 space-y-6 px-10 bg-white rounded-lg shadow-lg text-black">
-        <h2 className="text-2xl font-semibold">Login</h2>
+    <div className="min-h-screen min-w-[100vw] text-black flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-slate-100 px-6 relative">
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full border rounded-lg p-2"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+      {/* 👈 Back Button */}
+      <button
+        onClick={handleBack}
+        className="absolute top-6 left-6 flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 transition"
+      >
+        ← Back
+      </button>
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full border rounded-lg p-2"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+      {/* Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-md bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-100 p-8 space-y-6"
+      >
 
-        <button
+        {/* Branding */}
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Welcome back
+          </h1>
+          <p className="text-sm text-slate-500">
+            Sign in to continue
+          </p>
+        </div>
+
+        {/* Inputs */}
+        <div className="space-y-4">
+
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white 
+              focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500
+              transition-all"
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white 
+              focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500
+              transition-all"
+          />
+
+        </div>
+
+        {/* CTA */}
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          whileHover={{ scale: 1.01 }}
           onClick={handleLogin}
-          className={`w-full py-2  text-white rounded-lg  ${brand.theme.button.primary} ${brand.theme.shape?.radius || ""}`}
-          style={{ transition: "background-color 0.3s ease" }} >
-          Login
-        </button>
-        <p className="text-center"> New to {brand.siteName}? <Link to="/register">Register Here.</Link></p>
+          className="w-full py-3 text-white font-semibold rounded-xl
+            bg-gradient-to-r from-indigo-600 to-purple-600
+            shadow-lg shadow-indigo-200 hover:shadow-xl transition-all"
+        >
+          Continue
+        </motion.button>
 
-        {popup && (
-          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg">
-            Invalid credentials. Please try again.
-          </div>
-        )}
-      </div></div>
+        {/* Footer */}
+        <p className="text-center text-xs text-slate-400">
+          New here?{" "}
+          <Link to="/register" className="text-indigo-600 hover:underline">
+            Create account
+          </Link>
+        </p>
+      </motion.div>
+
+      {/* Popup */}
+      {popup && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 bg-red-500 text-white px-5 py-2 rounded-full shadow-lg text-sm">
+          Invalid credentials. Please try again.
+        </div>
+      )}
+    </div>
   );
 }

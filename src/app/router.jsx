@@ -19,6 +19,7 @@ import StudentProfile from "../student/pages/Profile";
 import StudentSecurity from "../student/pages/Security";
 import StudentHistory from "../student/pages/History";
 import WatchCourse from "../student/pages/WatchCourse";
+import Tenant from "../public/pages/Tenant";
 export const router = createBrowserRouter([
 
   // 🔐 Root "/"
@@ -64,6 +65,7 @@ export const router = createBrowserRouter([
   // 🔓 Auth
   { path: "/login", element: <Login /> },
   { path: "/register", element: <Register /> },
+  { path: "/welcome", element: <Tenant /> },
 
   // 🌐 Optional public courses
   { path: "/courses", element: <Courses /> },

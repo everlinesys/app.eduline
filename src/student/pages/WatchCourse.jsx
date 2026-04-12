@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import api from "../../shared/api";
 import { getUser } from "../../shared/auth";
 import { useBranding } from "../../shared/hooks/useBranding";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 
 import MobileSyllabus from "../components/MobileSyllabus";
 import VideoPlayer from "../../shared/video/VideoPlayer";
@@ -13,7 +13,6 @@ export default function WatchCourse() {
   const user = getUser();
   const brand = useBranding();
 
-  const theme = brand.theme;
   const primary = brand.colors?.primary || "#111827";
 
   const [course, setCourse] = useState(null);
@@ -86,8 +85,9 @@ export default function WatchCourse() {
   }
 
   return (
-    <div className={`${theme.layout.container} min-h-screen md:ml-0 `}>
+    <div className="min-h-screen bg-slate-50 overflow-x-hidden pb-20">
 
+      {/* Mobile syllabus */}
       <MobileSyllabus
         units={units}
         chaptersByUnit={chaptersByUnit}
@@ -95,23 +95,23 @@ export default function WatchCourse() {
         currentChapterId={currentChapter?.id}
       />
 
-      <div className="max-w-[1400px]  lg:flex">
+      <div className="lg:flex max-w-6xl mx-auto">
 
         {/* ===== SIDEBAR ===== */}
-        <aside className="hidden lg:block md:max-w-72 border-r border-slate-100 pt-10">
-          <div className="px-6 mb-8">
-            <p className="text-xs text-slate-400 uppercase tracking-widest">
+        <aside className="hidden lg:block w-72 bg-white border-r border-slate-100 pt-6">
+          <div className="px-4 mb-6">
+            <p className="text-[10px] text-slate-400 uppercase tracking-wider">
               Course
             </p>
-            <h1 className=" font-semibold mt-1" style={{fontSize:30}}>
+            <h1 className="text-lg font-semibold mt-1 leading-tight">
               {course.title}
             </h1>
           </div>
 
-          <nav className="px-3 pb-10 space-y-6">
+          <nav className="px-2 pb-10 space-y-4">
             {units.map((unit) => (
               <div key={unit.id}>
-                <h3 className="px-3 mb-2 text-xs font-semibold text-slate-800 uppercase tracking-wide">
+                <h3 className="px-2 mb-2 text-[11px] font-semibold text-slate-500 uppercase">
                   {unit.title}
                 </h3>
 
@@ -122,11 +122,10 @@ export default function WatchCourse() {
                     <button
                       key={ch.id}
                       onClick={() => setCurrentChapter(ch)}
-                      style={{background: brand.colors.primary , borderRadius:4 , color: brand.colors.accent}}
-                      className={`w-full text-left px-2 py-1  text-sm transition ${
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition ${
                         active
-                          ? "bg-slate-50 font-medium"
-                          : "text-slate-500 hover:text-slate-900"
+                          ? "bg-slate-100 text-slate-900 font-medium"
+                          : "text-slate-500 hover:bg-slate-50"
                       }`}
                     >
                       {ch.title}
@@ -138,53 +137,53 @@ export default function WatchCourse() {
           </nav>
         </aside>
 
-        {/* ===== CONTENT ===== */}
-        <main className="flex-grow px-2">
-          <div className="py-4 lg:p-10 max-w-4xl mx-auto space-y-6">
+        {/* ===== MAIN CONTENT ===== */}
+        <main className="flex-1 px-3">
+          <div className="py-4 lg:py-6 max-w-3xl mx-auto space-y-5">
 
             {/* VIDEO */}
-            <div className="aspect-video  rounded-xl overflow-hidden">
+            <div className="aspect-video rounded-2xl overflow-hidden bg-black shadow-sm">
               {currentChapter && (
                 <VideoPlayer videoId={currentChapter.bunnyVideoId} />
               )}
             </div>
 
-            {/* TITLE + NAV */}
+            {/* TITLE + DESCRIPTION */}
             {currentChapter && (
               <div className="space-y-4">
 
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div>
-                    <h2 className="text-lg font-semibold">
-                      {currentChapter.title}
-                    </h2>
+                <div className="space-y-2">
+                  <h2 className="text-base font-semibold text-slate-900">
+                    {currentChapter.title}
+                  </h2>
 
-                    {currentChapter.description && (
-                      <p className="text-sm text-slate-500 mt-1">
-                        {currentChapter.description}
-                      </p>
-                    )}
-                  </div>
+                  {currentChapter.description && (
+                    <p className="text-sm text-slate-500 leading-relaxed whitespace-pre-line">
+                      {currentChapter.description}
+                    </p>
+                  )}
+                </div>
 
-                  {/* NAV BUTTONS */}
-                  <div className="flex items-center gap-2">
-                    <button
-                      disabled={!hasPrev}
-                      onClick={handlePrev}
-                      className="p-2 rounded-full border border-slate-200 text-slate-100 disabled:opacity-30"
-                    >
-                      <ChevronLeft size={18} />
-                    </button>
+                {/* NAVIGATION */}
+                <div className="flex items-center justify-between">
 
-                    <button
-                      disabled={!hasNext}
-                      onClick={handleNext}
-                      className="px-4 py-2 rounded-full text-sm font-medium text-white disabled:opacity-30"
-                      style={{ background: primary }}
-                    >
-                      Next
-                    </button>
-                  </div>
+                  <button
+                    disabled={!hasPrev}
+                    onClick={handlePrev}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-slate-200 shadow-sm active:scale-95 disabled:opacity-30"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+
+                  <button
+                    disabled={!hasNext}
+                    onClick={handleNext}
+                    className="px-5 h-10 rounded-full text-sm font-semibold text-white active:scale-95 disabled:opacity-30"
+                    style={{ background: primary }}
+                  >
+                    Next
+                  </button>
+
                 </div>
 
               </div>

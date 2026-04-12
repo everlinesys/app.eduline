@@ -1,47 +1,49 @@
-import { MdMenu, MdNotifications, MdPerson } from "react-icons/md";
+import { MdMenu, MdPerson } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../../shared/auth";
 
 export default function StudentHeader({ onMenuClick }) {
-    const navigate = useNavigate();
-    const user = getUser();
+  const navigate = useNavigate();
+  const user = getUser();
 
-    return (
-        <header className="h-16 bg-white border-b flex items-center justify-between px-6 shadow-sm">
+  return (
+    <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-slate-100">
 
-            {/* ===== LEFT SIDE ===== */}
-            <div className="flex  items-center gap-3">
+      <div className="h-16 flex items-center justify-between px-4">
 
-                {/* ⭐ HAMBURGER (mobile only) */}
-                <button
-                    onClick={onMenuClick}
-                    className="lg:hidden text-gray-700 "
-                    style={{background:"transparent", color: "gray", padding:"0px"}}
-                >
-                    <MdMenu size={24} />
-                </button>
+        {/* LEFT */}
+        <div className="flex items-center gap-2">
 
-                <h1 className="text-md lg:text-lg font-semibold text-gray-800" style={{fontSize:"medium" , fontWeight:"bold"}}>
-                    Student Dashboard
-                </h1>
-            </div>
+          {/* Hamburger */}
+          <button
+            onClick={onMenuClick}
+            className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 active:scale-95 transition"
+          >
+            <MdMenu size={22} className="text-slate-700" />
+          </button>
 
-            {/* ===== RIGHT SIDE ===== */}
-            <div className="flex items-center gap-5">
-                {/* <button>
-                    <MdNotifications size={20} />
-                </button> */}
+          {/* Title */}
+          <h1 className="text-base font-semibold text-slate-900 tracking-tight">
+            My Learning
+          </h1>
+        </div>
 
-                <div
-                    className="flex items-center gap-2 cursor-pointer"
-                    onClick={() => navigate("/student/profile")}
-                >
-                    <MdPerson size={20} />
-                    <span className=" text-sm font-medium">
-                        {user?.name || "Student"}
-                    </span>
-                </div>
-            </div>
-        </header>
-    );
+        {/* RIGHT */}
+        <div className="flex items-center gap-3">
+
+          {/* Profile Chip */}
+          <div
+            onClick={() => navigate("/student/profile")}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 transition cursor-pointer"
+          >
+            <MdPerson size={18} className="text-slate-700" />
+            <span className="text-sm font-medium text-slate-700 max-w-[100px] truncate">
+              {user?.name || "Student"}
+            </span>
+          </div>
+
+        </div>
+      </div>
+    </header>
+  );
 }

@@ -3,16 +3,18 @@ import { useNavigate } from "react-router-dom";
 import api from "../../shared/api";
 import { getUser } from "../../shared/auth";
 import { useBranding } from "../../shared/hooks/useBranding";
+import { Calendar, Clock, Video, Radio } from 'lucide-react';
+import { PlayCircle, BookOpen, CheckCircle, TrendingUp } from 'lucide-react';
 
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
+// import {
+//   ResponsiveContainer,
+//   AreaChart,
+//   Area,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   CartesianGrid,
+// } from "recharts";
 
 export default function Dashboard() {
   const user = getUser();
@@ -31,6 +33,7 @@ export default function Dashboard() {
       const liveRes = await api.get("/live-classes/student");
 
       setData(res.data);
+      console.log("hi", res.data)
       setLiveClasses(liveRes.data);
     }
     load();
@@ -79,145 +82,161 @@ export default function Dashboard() {
     { day: "Sat", progress: 80 },
     { day: "Sun", progress: 75 },
   ];
-  function joinLiveClass() {
-    const meetLink = "https://meet.google.com/fhg-jqka-uuf";
-    window.open(meetLink, "_blank");
+  function isEnded(end) {
+    return now > new Date(end);
   }
-  return (
-    <div className="space-y-10 p-4 md:p-0">
 
-      {/* ===== HERO HEADER ===== */}
-      <div
-        className="p-8 rounded-3xl text-white shadow-xl"
-        style={{ background: primary }}
-      >
-        <h2 className="text-2xl font-bold">
-          Welcome back, {user?.name}
+  return (
+    <div className="min-h-screen bg-slate-50 pb-24 overflow-x-hidden">
+
+      {/* ===== HEADER ===== */}
+      <div className="px-4 pt-5 pb-3">
+        <h2 className="text-lg font-semibold text-slate-900">
+          Hi, {user?.name} 👋
         </h2>
-        <p className="text-sm opacity-90 mt-1">
-          Let’s continue your learning journey.
+        <p className="text-xs text-slate-500">
+          Let’s continue learning
         </p>
       </div>
 
-      {/* ===== OVERVIEW CARDS ===== */}
-      {/* ===== LIVE CLASS ===== */}
-      {/* ===== LIVE CLASSES ===== */}
-      {liveClasses.length > 0 && (
-        <Section title="Live Sessions">
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            {liveClasses.map((lc) => {
-              const live = isLive(lc.startTime, lc.endTime);
-
-              return (
-                <div
-                  key={lc.id}
-                  className="bg-white border rounded-2xl p-5 space-y-3 shadow-sm"
-                >
-
-                  {/* Course */}
-                  <p className="text-[10px] uppercase text-slate-400 font-bold tracking-widest">
-                    {lc.course?.title}
-                  </p>
-
-                  {/* Title */}
-                  <h4 className="font-semibold text-slate-900">
-                    {lc.title}
-                  </h4>
-
-                  {/* Time */}
-                  <p className="text-sm text-slate-500">
-                    {new Date(lc.startTime).toLocaleString()}
-                  </p>
-
-                  {/* Countdown */}
-                  <p className={`text-lg font-mono ${live ? "text-red-500" : "text-indigo-600"
-                    }`}>
-                    {live ? "🔴 Live Now" : `⏳ ${getCountdown(lc.startTime)}`}
-                  </p>
-
-                  {/* Join */}
-                  <button
-                    disabled={!live}
-                    onClick={() => window.open(lc.meetLink, "_blank")}
-                    className={`w-full py-2 rounded-lg text-sm font-semibold transition
-                ${live
-                        ? "bg-red-600 hover:bg-red-700 text-white"
-                        : "bg-slate-200 text-slate-400 cursor-not-allowed"
-                      }`}
-                  >
-                    🔴 Join Class
-                  </button>
-
-                </div>
-              );
-            })}
-
-          </div>
-        </Section>
-      )}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* ===== STATS ===== */}
+      <div className="flex gap-3 px-4 overflow-x-auto no-scrollbar pb-2">
 
         <OverviewCard
-          label="Enrolled Courses"
+          label="Courses"
           value={data.stats.totalCourses}
           color="#6366f1"
         />
 
         <OverviewCard
-          label="Completed"
+          label="Done"
           value={data.stats.completedCourses}
           color="#16a34a"
         />
 
         <OverviewCard
-          label="Completion Rate"
-          value={`${Math.round(
-            (data.stats.completedCourses /
-              data.stats.totalCourses) *
-            100 || 0
-          )}%`}
+          label="Progress"
+          value={`${Math.round((data.stats.completedCourses / data.stats.totalCourses) * 100 || 0)}%`}
           color={primary}
         />
       </div>
 
-      {/* ===== ACTIVITY GRAPH ===== */}
-      <div className="bg-white border rounded-2xl p-6 shadow-sm">
-        <h3 className="font-semibold mb-4">
-          Learning Activity
-        </h3>
+      {/* ===== MY COURSES ===== */}
+      <Section title="My Courses">
+        <div className="space-y-4 px-4">
+          {data.courses.map((c) => (
+            <div
+              key={c.id}
+              className="bg-white rounded-2xl shadow-sm overflow-hidden active:scale-[0.98] transition"
+            >
+              {/* Image */}
+              <div className="h-36 w-full overflow-hidden">
+                <img
+                  src={`${api.defaults.baseURL.replace("/api", "")}${c.thumbnail}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
 
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" />
-              <YAxis />
-              <Tooltip />
-              <Area
-                type="monotone"
-                dataKey="progress"
-                stroke={primary}
-                fill={primary}
-                fillOpacity={0.15}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+              {/* Content */}
+              <div className="p-4 space-y-3">
+                <h4 className="text-sm font-semibold line-clamp-2">
+                  {c.title}
+                </h4>
+
+                {/* Progress */}
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-400">Progress</span>
+                    <span style={{ color: primary }}>
+                      {c.progress}%
+                    </span>
+                  </div>
+
+                  <div className="h-1.5 bg-slate-100 rounded-full">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${c.progress}%`,
+                        background: primary,
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => navigate(`/student/watch/${c.id}`)}
+                  className="w-full py-2 text-sm font-semibold rounded-xl text-white"
+                  style={{ background: primary }}
+                >
+                  {c.progress > 0 ? "Resume" : "Start"}
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      </Section>
 
-      {/* ===== CONTINUE LEARNING ===== */}
+      {/* ===== LIVE SESSIONS ===== */}
+      {liveClasses.length > 0 && (
+        <Section title="Live Sessions">
+          <div className="space-y-4 px-4">
+
+            {liveClasses.map((lc) => {
+              const live = isLive(lc.startTime, lc.endTime);
+              const ended = isEnded(lc.endTime);
+
+              return (
+                <div
+                  key={lc.id}
+                  className="bg-white rounded-2xl p-4 shadow-sm"
+                >
+                  <h4 className="text-sm font-semibold">
+                    {lc.title}
+                  </h4>
+
+                  <p className="text-xs text-slate-500 mt-1">
+                    {lc.course?.title}
+                  </p>
+
+                  <p className="text-xs text-slate-400 mt-2">
+                    {new Date(lc.startTime).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+
+                  <div className="mt-3 text-xs font-medium">
+                    {live
+                      ? "🔴 Live Now"
+                      : ended
+                        ? "Ended"
+                        : getCountdown(lc.startTime)}
+                  </div>
+
+                  <button
+                    disabled={!live}
+                    onClick={() => window.open(lc.meetLink, "_blank")}
+                    className={`mt-3 w-full py-2 rounded-xl text-sm font-semibold ${live
+                      ? "bg-black text-white"
+                      : "bg-slate-100 text-slate-400"
+                      }`}
+                  >
+                    {live ? "Join Session" : ended ? "Ended" : "Starting Soon"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </Section>
+      )}
+
+      {/* ===== CONTINUE ===== */}
       {data.continueLearning?.length > 0 && (
         <Section title="Continue Learning">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
+          <div className="space-y-4 px-4">
             {Object.values(
               data.continueLearning.reduce((acc, item) => {
-                // keep first occurrence of each course
-                if (!acc[item.courseId]) {
-                  acc[item.courseId] = item;
-                }
+                if (!acc[item.courseId]) acc[item.courseId] = item;
                 return acc;
               }, {})
             ).map((item, i) => (
@@ -225,6 +244,7 @@ export default function Dashboard() {
                 key={i}
                 title={item.courseTitle}
                 subtitle={item.chapterTitle}
+                thumbnail={item.thumbnail}
                 onClick={() =>
                   navigate(`/student/watch/${item.courseId}`)
                 }
@@ -232,58 +252,14 @@ export default function Dashboard() {
                 action="Resume"
               />
             ))}
-
           </div>
         </Section>
       )}
 
-      {/* ===== MY COURSES ===== */}
-      <Section title="My Courses">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.courses.map((c) => (
-            <div
-              key={c.id}
-              className="bg-white border rounded-2xl p-5 hover:shadow transition"
-            >
-              <h4 className="font-semibold">{c.title}</h4>
-
-              {/* Progress */}
-              <div className="mt-4">
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full"
-                    style={{
-                      width: `${c.progress}%`,
-                      background: primary,
-                    }}
-                  />
-                </div>
-
-                <p className="text-xs text-gray-500 mt-1">
-                  {c.progress}% completed
-                </p>
-              </div>
-
-              <button
-                onClick={() =>
-                  navigate(`/student/watch/${c.id}`)
-                }
-                className="mt-5 w-full py-2 rounded-lg text-white text-sm"
-                style={{ background: primary }}
-              >
-                {c.progress > 0
-                  ? "Resume"
-                  : "Start Course"}
-              </button>
-            </div>
-          ))}
-        </div>
-      </Section>
-
       {/* ===== SUGGESTED ===== */}
       {data.suggestedCourses?.length > 0 && (
-        <Section title="Suggested for You">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Section title="Suggested">
+          <div className="space-y-4 px-4">
             {data.suggestedCourses.map((c) => (
               <CourseCard
                 key={c.id}
@@ -291,7 +267,8 @@ export default function Dashboard() {
                 subtitle={`₹${c.price}`}
                 onClick={() => navigate(`/course/${c.id}`)}
                 primary={primary}
-                action="View Course"
+                thumbnail={c.thumbnail}
+                action="View"
               />
             ))}
           </div>
@@ -299,14 +276,20 @@ export default function Dashboard() {
       )}
     </div>
   );
+
 }
 
 /* ===== COMPONENTS ===== */
 
 function Section({ title, children }) {
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold">{title}</h3>
+    <div className="mt-6">
+
+      {/* Title with padding */}
+      <h3 className="px-4 mb-3 text-sm font-semibold text-slate-900 tracking-tight">
+        {title}
+      </h3>
+
       {children}
     </div>
   );
@@ -327,20 +310,44 @@ function OverviewCard({ label, value, color }) {
     </div>
   );
 }
-
-function CourseCard({ title, subtitle, onClick, primary, action }) {
+function CourseCard({
+  title,
+  subtitle,
+  thumbnail,
+  onClick,
+  primary,
+  action,
+}) {
   return (
-    <div className="bg-white border rounded-2xl p-5 hover:shadow transition">
-      <p className="text-sm text-gray-500">{subtitle}</p>
-      <h4 className="font-semibold mt-1">{title}</h4>
+    <div
+      onClick={onClick}
+      className="cursor-pointer  rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-all duration-300 group"
+    >
+      {/* IMAGE */}
+      <div className="h-40 w-full overflow-hidden">
+        <img
+          src={`${api.defaults.baseURL.replace("/api", "")}${thumbnail}`}
 
-      <button
-        onClick={onClick}
-        className="mt-4 w-full py-2 rounded-lg text-white text-sm"
-        style={{ background: primary }}
-      >
-        {action}
-      </button>
+          alt={title}
+          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+        />
+      </div>
+
+      {/* CONTENT */}
+      <div className="p-4">
+        <h3 className="font-semibold text-lg text-gray-800 mb-1 line-clamp-2">
+          {title}
+        </h3>
+
+        <p className="text-sm text-gray-500 mb-3">{subtitle}</p>
+
+        <button
+          className="text-sm font-semibold"
+          style={{ color: primary }}
+        >
+          {action}
+        </button>
+      </div>
     </div>
   );
 }

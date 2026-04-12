@@ -265,7 +265,7 @@ export default function Dashboard() {
                 key={c.id}
                 title={c.title}
                 subtitle={`₹${c.price}`}
-                onClick={() => navigate(`/course/${c.id}`)}
+                onClick={() => navigate(`/student/course/${c.id}`)}
                 primary={primary}
                 thumbnail={c.thumbnail}
                 action="View"

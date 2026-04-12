@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <StudentLayout />,
-        children: [ 
+        children: [
           { index: true, element: <Dashboard /> },
           { path: "my-courses", element: <MyCourses /> },
           { path: "certificates", element: <StudentCertificates /> },
@@ -37,6 +37,11 @@ export const router = createBrowserRouter([
           { path: "security", element: <StudentSecurity /> },
           { path: "history", element: <StudentHistory /> },
           { path: "watch/:courseId", element: <WatchCourse /> },
+
+          { path: "/courses", element: <Courses /> },
+          { path: "contact", element: <Contact /> },
+          { path: "courses/:courseId", element: <CourseDetails /> },
+          { path: "course/:courseId", element: <CourseDetails /> },
         ],
       },
     ],
@@ -57,6 +62,10 @@ export const router = createBrowserRouter([
           { path: "security", element: <StudentSecurity /> },
           { path: "history", element: <StudentHistory /> },
           { path: "watch/:courseId", element: <WatchCourse /> },
+          { path: "courses", element: <Courses /> },
+          { path: "contact", element: <Contact /> },
+          { path: "courses/:courseId", element: <CourseDetails /> },
+          { path: "course/:courseId", element: <CourseDetails /> },
         ],
       },
     ],
@@ -68,10 +77,10 @@ export const router = createBrowserRouter([
   { path: "/welcome", element: <Tenant /> },
 
   // 🌐 Optional public courses
-  { path: "/courses", element: <Courses /> },
-  { path: "contact", element: <Contact /> },
-  { path: "courses/:courseId", element: <CourseDetails /> },
-  { path: "course/:courseId", element: <CourseDetails /> },
+  // { path: "/courses", element: <Courses /> },
+  // { path: "contact", element: <Contact /> },
+  // { path: "courses/:courseId", element: <CourseDetails /> },
+  // { path: "course/:courseId", element: <CourseDetails /> },
   // ❌ Fallback
   {
     path: "*",

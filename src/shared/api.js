@@ -1,13 +1,12 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000/api",
+  baseURL: import.meta.env.VITE_API_URL ,
 });
 
 // 🔑 Attach TENANT ID (static per frontend build)
-api.defaults.headers.common["x-tenant-id"] =
-  // import.meta.env.VITE_TENANT_ID ||
-  localStorage.getItem("tenant_id") ;
+api.defaults.headers.common["x-tenant-id"] = localStorage.getItem("tenant_id");
+// import.meta.env.VITE_TENANT_ID ||
 
 // 🔐 Attach JWT token (dynamic per user)
 api.interceptors.request.use(

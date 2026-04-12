@@ -10,9 +10,10 @@ export default function Tenant() {
 
   // 🚀 Auto redirect if already exists
   useEffect(() => {
+     localStorage.setItem("tenant_id", 8);//remove this line after testing
     const existing = localStorage.getItem("tenant_id");
     if (existing) {
-      navigate("/login", { replace: true });
+      window.location.href = "/login";
     } else {
       setChecking(false);
     }

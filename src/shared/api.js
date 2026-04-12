@@ -7,7 +7,7 @@ const api = axios.create({
 // 🔑 Attach TENANT ID (static per frontend build)
 api.defaults.headers.common["x-tenant-id"] =
   // import.meta.env.VITE_TENANT_ID ||
-  localStorage.getItem("tenant_id") || 8;
+  localStorage.getItem("tenant_id") ;
 
 // 🔐 Attach JWT token (dynamic per user)
 api.interceptors.request.use(

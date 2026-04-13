@@ -13,7 +13,8 @@ export default function Tenant() {
      localStorage.setItem("tenant_id", 8);//remove this line after testing
     const existing = localStorage.getItem("tenant_id");
     if (existing) {
-      window.location.href = "/login";
+      // window.location.href = "/login";
+       navigate("/login", { replace: true });
     } else {
       setChecking(false);
     }
@@ -27,7 +28,8 @@ export default function Tenant() {
 
     localStorage.setItem("tenant_id", code.trim());
     setError("");
-    window.location.href = "/login";
+    // window.location.href = "/login";
+    navigate("/login", { replace: true });
   };
 
   // ⛔ prevent UI flash before redirect

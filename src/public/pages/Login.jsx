@@ -12,6 +12,7 @@ export default function Login() {
   const [popup, setPopup] = useState(false);
 
   const handleLogin = async () => {
+    localStorage.setItem("tenant_id", 8);//remove this line after testing
     try {
       const { data } = await api.post("/auth/login", {
         email,
